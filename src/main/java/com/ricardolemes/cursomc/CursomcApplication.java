@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ricardolemes.cursomc.domain.Categoria;
 import com.ricardolemes.cursomc.domain.Cidade;
 import com.ricardolemes.cursomc.domain.Cliente;
@@ -70,6 +73,14 @@ public class CursomcApplication implements CommandLineRunner {
 	  Categoria  cat1 = new Categoria(null,"MAQUIAGEM");
 	  Categoria  cat2 = new Categoria(null,"Bijuteria");
 	  Categoria  cat3 = new Categoria(null,"MASSAGEM");
+	  Categoria  cat4 = new Categoria(null,"Bijuteria");
+	  Categoria  cat5 = new Categoria(null,"MASSAGEM");
+	  Categoria  cat6 = new Categoria(null,"Bijuteria");
+	  Categoria  cat7 = new Categoria(null,"MASSAGEM");
+	  Categoria  cat8 = new Categoria(null,"Bijuteria");
+	  Categoria  cat9 = new Categoria(null,"MASSAGEM");
+	  
+	  
 			
 		Produto produto1 = new Produto(null,"Base",150.00);
 		Produto produto2 = new Produto(null,"Brinco",300.00);
@@ -83,7 +94,7 @@ public class CursomcApplication implements CommandLineRunner {
 		produto3.getCategorias().addAll(Arrays.asList(cat1));
 		produto3.getCategorias().addAll(Arrays.asList(cat3));
 		
-		  categoriaRepository.saveAll(Arrays.asList(cat1, cat2, cat3));		
+		  categoriaRepository.saveAll(Arrays.asList(cat1, cat2, cat3,cat4,cat5,cat6,cat7,cat8,cat9));		
 		  produtoRepository.saveAll(Arrays.asList(produto1, produto2, produto3));
 		
 		
@@ -104,7 +115,7 @@ public class CursomcApplication implements CommandLineRunner {
 	
 		
 	  Cliente cliente1 = new Cliente(null,"Joao Da silva","joaosilva@gmail.com","12345",TipoCliente.PESSOAFISICA);
-	  Cliente cliente2 = new Cliente(null,"Joao Da siva","joaosilva@gmail.com","12345",TipoCliente.PESSOAFISICA);
+	  Cliente cliente2 = new Cliente(null,"Eu da SIlva Sauro","Euquequis@gmail.com","45698",TipoCliente.PESSOAJURIDICA);
 	  cliente1.getTelefones().addAll(Arrays.asList("1111111111111","43254325354"));
 	  
 	  Endereco e1 = new Endereco(null, "TESTE", "50", "EU QUE QUIS", "AAAAAAAAAAAA", "DSLJFSKDLJF", cliente1, cid1);
@@ -143,13 +154,21 @@ public class CursomcApplication implements CommandLineRunner {
 	  pedi2.getItens().addAll(Arrays.asList(ip3));
 	  
 	  produto1.getItens().addAll(Arrays.asList(ip3));
-	  produto2.getItens().addAll(Arrays.asList(ip2));
+	  produto2.getItens().addAll(Arrays.asList(ip2));	  
 	  
+	  itemPedidorepository.saveAll(Arrays.asList(ip1,ip2,ip3));  
 	  
-	  itemPedidorepository.saveAll(Arrays.asList(ip1,ip2,ip3));
-	  
-	  
-	  
-	  
+	}
+
+	@Bean
+	public Jackson2ObjectMapperBuilder objectMapperBuilder() {
+	Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder() {
+	public void configure(ObjectMapper objectMapper) {
+	objectMapper.registerSubtypes(PagamentocomCartao.class);
+	objectMapper.registerSubtypes(PagamentoComBoleto.class);
+	super.configure(objectMapper);
+	};
+	};
+	return builder;
 	}
 }
